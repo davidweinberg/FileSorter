@@ -2,6 +2,11 @@
 Created on Jun 17, 2012
 
 @author: weinberg
+
+Purpose of this script is to move files from a local storage to a server (ex: media server).
+The script will read a listing of directory names from the server then try to find files
+matching the name in the local folder.  If some are found it will upload them to the 
+appropriate location on the server.
 '''
 import os, re, shutil, ConfigParser
 
@@ -11,7 +16,7 @@ def find_files(path, types, match=''):
     mylist = []
     
     for f in files:
-        if f.endswith(str(types)) and re.search(match, f, re.IGNORECASE):
+        if f.endswith(types) and re.search(match, f, re.IGNORECASE):
             src = os.path.join(path, f)
             mylist.append(src)   
     return mylist
@@ -34,4 +39,9 @@ def parse_downloads(server, local, types):
 if __name__ == '__main__':
     config = ConfigParser.RawConfigParser()
     config.read('settings.cfg')    
-    parse_downloads(config.get('app','server_dir'), config.get('app', 'temp_dir'), config.get('app', 'file_types').split(','))
+    
+    
+    ftypes = config.get('app', 'file_types')
+    flist = tuple(ftypes.split(','))
+       
+    parse_downloads(config.get('app','server_dir'), config.get('app', 'temp_dir'), flist)
