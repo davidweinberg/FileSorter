@@ -10,6 +10,10 @@ appropriate location on the server.
 '''
 import os, re, shutil, ConfigParser
 
+
+'''
+find a list of files given a path, file types and a regex match
+'''
 def find_files(path, types, match=''):
     files = os.listdir(path)
     files.sort()
@@ -20,11 +24,19 @@ def find_files(path, types, match=''):
             src = os.path.join(path, f)
             mylist.append(src)   
     return mylist
-            
+
+'''
+find a list of directories given a path
+'''            
 def find_directories(path):
     dirs =  [ name for name in os.listdir(path) if os.path.isdir(os.path.join(path, name)) ]
     return dirs
 
+'''
+ generate a list of folders from the server dir, then
+ search the temp directorie for any files with those names
+ and filetypes
+ '''
 def parse_downloads(server, local, types):    
     shows = find_directories(server)
     for show in shows:
@@ -36,9 +48,14 @@ def parse_downloads(server, local, types):
             print "Moving "+item+" to "+dst
             shutil.move(item, dst)
         
+'''
+main
+'''     
 if __name__ == '__main__':
+    # read config
     config = ConfigParser.RawConfigParser()
-    config.read('settings.cfg')    
-    
+    config.read('settings.cfg')
+        
+    # sort the downloads 
     parse_downloads(config.get('app','server_dir'), config.get('app', 'temp_dir'), tuple(config.get('app', 'file_types').split(',')))
     print "done!"
