@@ -40,8 +40,5 @@ if __name__ == '__main__':
     config = ConfigParser.RawConfigParser()
     config.read('settings.cfg')    
     
-    
-    ftypes = config.get('app', 'file_types')
-    flist = tuple(ftypes.split(','))
-       
-    parse_downloads(config.get('app','server_dir'), config.get('app', 'temp_dir'), flist)
+    parse_downloads(config.get('app','server_dir'), config.get('app', 'temp_dir'), tuple(config.get('app', 'file_types').split(',')))
+    print "done!"
